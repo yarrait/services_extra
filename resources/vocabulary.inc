@@ -71,7 +71,6 @@ function vocabulary_resources() {
 function _vocabulary_resource_retrieve($id) {
   $result = db_query('SELECT w.*, u.type FROM {vocabulary} w INNER JOIN {vocabulary_node_types} u ON w.vid = u.vid WHERE w.vid = %d', $id);
   return db_fetch_object($result);
-  
 }
 
 function _vocabulary_resource_index($page, $fields, $parameters, $page_size) { 

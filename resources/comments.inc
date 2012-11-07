@@ -1,9 +1,9 @@
 <?php
 
 function _comments_resource_access($op = 'view', $args = array()) {
-  switch ($op){
-     case 'view':
-      return user_access('administer comments');
+  switch ($op) {
+    case 'view':
+     return user_access('administer comments');
    }
 }
 
@@ -70,22 +70,6 @@ function comments_resources() {
         'access arguments' => array('administer comments'),
         'access arguments append' => FALSE,
       ),
-     'actions' => array(
-        'retrivecomments' => array(
-          'access callback' => '_comment_resource_access',
-          'access arguments' => array('view'),
-          'callback' => '_comment_resource_count',
-          'args'     => array(
-            array(
-              'name'         => 'cid',
-              'type'         => 'int',
-              'description'  => t('The node id to count all comments.'),
-              'source'       => array('data' => 'cid'),
-              'optional'     => FALSE,
-            ),
-          ),
-        ),
-     ),
   );
   return $resource;
 }
@@ -113,7 +97,6 @@ function _comments_resource_retrieve($cid = 0,$page = 0) {
   $total['array'] = $page_comments[$page]; 
   return $total;
 }
-
 function _comments_resource_index($page, $fields, $parameters, $page_size) { 
   // Limit to published nodes if user doesn't have 'administer nodes'
   // permissions.
@@ -136,10 +119,3 @@ function _comments_resource_index($page, $fields, $parameters, $page_size) {
   $total['array'] = $results; 
   return $total;
 }
-
-function _comment_resource_count($cid)
-{
-     return comment_num_all($cid);
-    return _comment_load($cid);
-}
-

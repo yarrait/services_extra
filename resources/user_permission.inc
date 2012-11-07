@@ -109,21 +109,19 @@ function _permission_module_user_resource_retrieve($module = NULL, $role = 0) {
     } 
   $role_permissions = explode(", ",$role_permissions);
   $permissions = module_invoke($module, 'perm');
-  $count1=count($role_permissions);
-  $count=count($permissions);
- 
+  $count1=count($role_permissions);$count=count($permissions);
   for($i = 0; $i<$count1; $i++) 
   {
      for($j=0;$j<$count;$j++)
-     {
+      {
        if($permissions[$j] == $role_permissions[$i])
        {
          $match_array['Enable'][] = $permissions[$j];
        }
-     }
+      }
   }
   if(empty($match_array))
-     return 0;
+     return services_error("There are no anabled permissions for ".$role_name->name , 404,null);
   else
      return $match_array;
 }

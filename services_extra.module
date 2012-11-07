@@ -11,8 +11,7 @@ module_load_include('inc', 'services_extra', 'resources/user_update');
 module_load_include('inc', 'services_extra', 'resources/content_update');
 module_load_include('inc', 'services_extra', 'resources/vocabulary');
 module_load_include('inc', 'services_extra', 'resources/comments'); 
-
-
+module_load_include('inc', 'services_extra', 'resources/user_filter');
 function services_extra_services_resources() {
   $resources = array();
   $resources['watchdog'] = watchdog_resources();
@@ -26,6 +25,7 @@ function services_extra_services_resources() {
   $resources['content_update'] = content_update_resources();
   $resources['vocabulary'] = vocabulary_resources();
   $resources['comments'] = comments_resources();
+  $resources['user_filter'] = user_filter_resources();
  return $resources;
 }
 

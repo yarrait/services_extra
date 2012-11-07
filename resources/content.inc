@@ -111,7 +111,8 @@ function _content_resource_retrieve($nid) {
    return db_fetch_object($result);*/
 }
 
-function _content_resource_index($page, $fields, $parameters, $page_size) { 
+function _content_resource_index($page, $fields, $parameters, $page_size) {
+  $no_records=db_result(db_query('Select count(*) from node'));
   $results = array();
   $result = db_query('Select n.nid,n.vid,n.type,n.language,n.title,n.uid,u.name,n.status,n.created,n.changed,n.comment,n.promote,n.moderate,n.sticky,n.tnid,
     n.translate from node n left outer join users u on n.uid = u.uid ORDER BY changed desc');
@@ -126,13 +127,16 @@ function _content_resource_index($page, $fields, $parameters, $page_size) {
         $l=$l+10;
         $k++;
     }
-   return $page_node[$page];
+   $total['total'] = $no_records;
+   $total['contents'] = $page_node[$page]; 
+   return $total;
 }
 
 function _content_resource_create($node_data){
   $return =array();
   $option=$node_data['node']['option'];
   $filter=$node_data['node']['filter'];
+  $page=$node_data['node']['page'];
   $return =array();
   if(!empty($option) && !empty($filter))
   {
@@ -203,5 +207,19 @@ function _content_resource_create($node_data){
    }
  if(empty($results))
    return services_error("There is no post available for ".$filter, 404, null);
-    return $results;
+
+   $j=0;$k=0;$l=10;
+   for($i = 0; $i<count($results); $i= $i+10)
+   {
+       $page_content[$k]=array_slice($results,$j,$l);
+       $j=$j+10;
+       $l=$l+10;
+       $k++;
+   }
+
+   $user_total_data['total']=count($results);
+   $user_total_data['contents']=$page_content[$page];
+   return $user_total_data;
+
+
 }

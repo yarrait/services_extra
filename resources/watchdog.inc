@@ -76,9 +76,11 @@ function _watchdog_resource_retrieve($id) {
 
 function _watchdog_resource_index($page, $fields, $parameters, $page_size) 
 { 
+  $no_records=db_result(db_query('Select count(*) from watchdog'));
+  $total['total'] = $no_records;
   $result = db_query('Select w.*, u.name from watchdog w left outer join users u on w.uid = u.uid order by wid desc');
   $results = array();
-  $no_records=db_result(db_query('Select count(*) from watchdog'));
+  
   while ($watchdog = db_fetch_object($result))
   {
       $results[] = $watchdog;
@@ -92,8 +94,6 @@ function _watchdog_resource_index($page, $fields, $parameters, $page_size)
       $l=$l+10;
       $k++;
    }
-   $total['total'] = $no_records;
    $total['array'] = $page_watchdog[$page]; 
    return $total;
-  
 } 

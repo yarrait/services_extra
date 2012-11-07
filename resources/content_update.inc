@@ -29,14 +29,15 @@ function content_update_resources() {
 }
 
 function _content_update_resource_create($content_data){
-  $result =array();$error=array();
+  $result =array();
+  $error=array();
   $option=$content_data['option'];
   if(empty($option) || empty($content_data['node']))
    return services_error("option or nid field is requried" ,406,array('form_errors' => "option or nid field is requried."));
 
-  if($option=="publish" || $option=="promoted" || $option=="sticky")
+  if($option=="publish" || $option=="promote to front page" || $option=="make sticky")
       $values=1;
-  if($option=="unpublish" || $option=="unpromoted" || $option=="unsticky")
+  if($option=="unpublish" || $option=="demote from front page" || $option=="remove stickiness")
       $values=0;
   
   $count=count($content_data['node']);
@@ -55,12 +56,12 @@ function _content_update_resource_create($content_data){
    	          $result = db_query("UPDATE node SET status = '%d' WHERE nid = %d", $values, $nid);
    	          $count1++;
    	       }
-   	       else if($nid!=null && ($option=="promoted" || $option=="unpromoted" ))
+   	       else if($nid!=null && ($option=="promote to front page" || $option=="demote from front page" ))
                {
    	          $result = db_query("UPDATE {node} SET promote = '%d' WHERE nid = %d", $values, $nid);
 	   	  $count1++;
 	       }
-               else if($nid!=null && ($option=="sticky" || $option=="unsticky" ))
+               else if($nid!=null && ($option=="make sticky" || $option=="remove stickiness" ))
                { 
 	          $result = db_query("UPDATE {node} SET sticky = '%d' WHERE nid = %d", $values, $nid);
 		  $count1++;

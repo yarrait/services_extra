@@ -130,11 +130,12 @@ function _role_resource_retrieve($id) {
 }
 
 function _role_resource_index($page, $fields, $parameters, $page_size) { 
-  $query = services_resource_build_index_query('role', 'rd.rid asc', $page, $fields, $parameters, 'rd', 'rid', 10, 'role');
+$query=db_query("select * from role order by rid asc");
   $results = array();
   while ($node = db_fetch_object($query)) {
       $results[] = $node;
   }
+
  return services_resource_build_index_list($results, 'role','rid');
 }
 
