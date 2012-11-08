@@ -116,9 +116,9 @@ function _content_resource_index($page, $fields, $parameters, $page_size) {
   while ($node = db_fetch_object($result)){
     $results[] = $node;
   }
-  $start_index=0;
-  $page_no=0;
-  $last_index=10;
+  $start_index = 0;
+  $page_no = 0;
+  $last_index = 10;
   for($index = 0; $index<count($results); $index = $index + $page_size) {
     $page_node[$page_no]=array_slice($results,$start_index,$last_index);
     $start_index = $start_index + $page_size;
@@ -203,6 +203,7 @@ function _content_resource_create($node_data){
    }
  if(empty($results))
    return services_error("There is no post available for ".$filter, 404, null);
+
   $page_size = 10;
   $start_index = 0;
   $page_no = 0;

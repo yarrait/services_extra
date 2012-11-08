@@ -4,6 +4,7 @@ function _user_update_resource_access($op = 'view', $args = array()) {
   switch ($op) {
     case 'create':
       return user_access('administer users');
+      break;
    }
 }
 
@@ -30,9 +31,10 @@ function user_update_resources() {
 
 function _user_update_resource_create($user_data) {
   $return = array();
-  $user_count = count($user_data['user']);
-  $update_user_count = 0;
+  $user_total = count($user_data['user']);
+  $update_user_total = 0;
   $option = $user_data['option'];
+
   if(empty($option) || empty($user_data['user']))
     return services_error("option or uid field is requried" ,406,array('form_errors' => "option or uid field is requried."));
 
@@ -48,11 +50,11 @@ function _user_update_resource_create($user_data) {
         $total_uid[] = $uid;
         if($uid != null && ($option == "block" || $option == "active" )) {
           $result = db_query("UPDATE users SET status = '%d' WHERE uid = %d", $values, $uid);
-          $update_user_count++;
+          $update_user_total++;
         }
         else if ($uid != null && $option = "delete") {
           $result = db_query("DELETE from users WHERE uid = %d",$uid);
-          $update_user_count++;
+          $update_user_total++;
         }
       }
       else {
@@ -63,7 +65,7 @@ function _user_update_resource_create($user_data) {
       services_error('JSON format is not proper', 400);
     }  
   }
-  if ($update_user_count == $user_count) {
+  if ($update_user_total == $user_total) {
     return TRUE;
   }
   if (!empty($error_uid)) {

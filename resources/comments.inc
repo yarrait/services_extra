@@ -86,13 +86,14 @@ function _comments_resource_retrieve($cid = 0,$page = 0) {
   while ($total = db_fetch_object($result)) {
     $new_comments[] = $total;
   }
+  $page_size = 10;
   $start_index = 0;
   $page_no = 0;
   $last_index = 10;
-  for($index = 0; $index < count($new_comments); $index = $index + 10) {
+  for($index = 0; $index < count($new_comments); $index = $index + $page_size) {
     $page_comments[$page_no] = array_slice($new_comments,$start_index,$last_index);
-    $start_index = $start_index + 10;
-    $last_index = $last_index + 10;
+    $start_index = $start_index + $page_size;
+    $last_index = $last_index + $page_size;
     $page_no++;
   }
   $recent_comment['total'] = $total_num_comment;

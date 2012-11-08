@@ -4,6 +4,7 @@ function _vocabulary_term_resource_access($op = 'view', $args = array()) {
   switch ($op) {
     case 'view':
      return user_access('administer taxonomy');
+     break;
   }
 }
 

@@ -4,15 +4,17 @@ function _permission_module_user_resource_access($op = 'view', $args = array()) 
   switch ($op) {
     case 'view':
      return user_access('administer permissions');
+     break;
     case 'update':
      return user_access('administer permissions');
-    }
+     break;
+  }
 }
 
 function user_permission_resources() {
   $resource = array(
-      'retrieve' => array(
-        'callback' => '_permission_module_user_resource_retrieve',
+    'retrieve' => array(
+      'callback' => '_permission_module_user_resource_retrieve',
         'args' => array(
           array(
             'name' => 'modules',
@@ -32,9 +34,9 @@ function user_permission_resources() {
         'access callback' => '_permission_module_user_resource_access',
         'access arguments' => array('view'),
         'access arguments append' => TRUE,
-      ),
-     'update' => array(
-        'callback' => '_permission_module_user_resource_update',
+    ),
+    'update' => array(
+      'callback' => '_permission_module_user_resource_update',
         'args' => array(
           array(
             'name' => 'rid',
@@ -54,9 +56,9 @@ function user_permission_resources() {
         'access callback' => '_permission_module_user_resource_access',
         'access arguments' => array('update'),
         'access arguments append' => TRUE,
-      ),
-      'index' => array(
-        'callback' => '_permission_module_user_resource_index',
+    ),
+    'index' => array(
+      'callback' => '_permission_module_user_resource_index',
         'args' => array(
           array(
             'name' => 'page',
@@ -93,40 +95,41 @@ function user_permission_resources() {
         ),
      'access arguments' => array('administer permissions'),
         'access arguments append' => FALSE,
-       ),
+    ),
   );
   return $resource;
 }
 
 function _permission_module_user_resource_retrieve($module = NULL, $role = 0) {
 //permission_module_user/block?role=1
-  if($module && $role) {
-    $role_object=db_query("select name from role where rid=%d",$role);
-    $role_name=db_fetch_object($role_object);
+  if ($module && $role) {
+    $role_object = db_query("select name from role where rid=%d",$role);
+    $role_name = db_fetch_object($role_object);
     $result = db_query('SELECT p.perm FROM {permission} p WHERE p.rid = %d', $role);
     while ($role_record = db_fetch_object($result)) {
       $role_permissions = $role_record->perm;
     } 
     $role_permissions = explode(", ",$role_permissions);
     $permissions = module_invoke($module, 'perm');
-    $count1=count($role_permissions);$count=count($permissions);
-    for ($i = 0; $i<$count1; $i++) {
-      for ($j=0;$j<$count;$j++) {
+    $role_permission_total = count($role_permissions);
+    $module_permission_total = count($permissions);
+    for ($i = 0; $i<$role_permission_total; $i++) {
+      for ($j=0; $j<$module_permission_total; $j++) {
         if ($permissions[$j] == $role_permissions[$i]) {
           $match_array['Enable'][] = $permissions[$j];
         }
       }
     }
-  if (empty($match_array))
-     return services_error("There are no anabled permissions for ".$role_name->name , 404,null);
-  else
-     return $match_array;
-}
+    if (empty($match_array))
+      return FALSE;
+    else
+      return $match_array;
+  }
   else if ($module && !$role) {
-    $output[$module]=module_invoke($module, 'perm');
+    $output[$module] = module_invoke($module, 'perm');
     return $output;
   }
- return services_error('No module with ' .$module.' found.', 404);
+  return services_error('No module with ' .$module.' found.', 404);
 }
 
 function _permission_module_user_resource_index($page, $fields, $parameters, $page_size) {

@@ -35,9 +35,9 @@ function _user_filter_resource_create($user_data){
   $filter=$user_data['user']['filter'];
   $page=$user_data['user']['page'];
   
-  if (empty($option) || empty($filter))
+  if (empty($option) || empty($filter)) {
     return services_error("option or filter field is requried" ,406,array('form_errors' => "option or uid field is requried."));
-  
+  }
   if ($option == "role") {
      $no_records = db_result(db_query('Select count(*) from users_roles r inner join users u on r.uid = u.uid where r.rid=%d',$filter));
      $result = db_query('Select u.uid from users_roles r inner join users u on r.uid = u.uid where r.rid=%d ORDER BY uid DESC',$filter);
@@ -100,32 +100,32 @@ function _user_filter_resource_create($user_data){
     }
     $user_root = db_fetch_object(db_query("SELECT uid FROM users WHERE uid =1")); 
     $root_user_detail[] = user_load($user_root->uid);
-    $merge = array_merge($final_array,$root_user_detail);
-    $size = count($merge);
-    for ($i = 0;$i < $size;$i++) {
-      for ($j = 0;$j < $size;$j++) {
+    $merge_user = array_merge($final_array,$root_user_detail);
+    $size_array = count($merge);
+    for ($i = 0;$i < $size_array; $i++) {
+      for ($j = 0;$j < $size_array; $j++) {
         if ($i == $j) {
           continue;
         }
-        else if ($merge[$i]->uid == $merge[$j]->uid) {
-          unset ($merge[$i]);
+        else if ($merge_user[$i]->uid == $merge_user[$j]->uid) {
+          unset ($merge_user[$i]);
         }
       }
     }
-    foreach ($merge as $key =>$val)
-      $final[] = $val;
- 
+    foreach ($merge_user as $key =>$val) {
+      $all_user[] = $val;
+    }
     $page_size = 20;
     $start_index = 0;
     $page_no = 0;
     $last_index = 20;
-    for ($i = 0; $i<count($final); $i= $i + $page_size) {
-      $page_user[$page_no] = array_slice($final,$start_index,$last_index);
+    for ($i = 0; $i<count($all_user); $i= $i + $page_size) {
+      $page_user[$page_no] = array_slice($all_user,$start_index,$last_index);
       $start_index = $start_index + $page_size;
       $last_index = $last_index + $page_size;
       $page_no++;
     }
-    $user_filter_data['total'] = count($final);
+    $user_filter_data['total'] = count($all_user);
     $user_filter_data['users'] = $page_user[$page];
     return $user_filter_data;
   }
@@ -145,9 +145,9 @@ function _user_filter_resource_create($user_data){
       }
     }
   }
-  if (empty($user_details))
+  if (empty($user_details)) {
     return services_error("No users available.", 404);
-
+  }
   $page_size = 20; 
   $start_index = 0;
   $page_no = 0;
