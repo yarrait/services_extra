@@ -3,15 +3,16 @@
 function _comments_resource_access($op = 'view', $args = array()) {
   switch ($op) {
     case 'view':
-     return user_access('administer comments');
-   }
-}
+      return user_access('administer comments');
+      break;
+    }
+  }
 
 function comments_resources() {
   $resource = array(
-      'retrieve' => array(
-        'callback' => '_comments_resource_retrieve',
-	  'args' => array(
+    'retrieve' => array(
+      'callback' => '_comments_resource_retrieve',
+        'args' => array(
           array(
             'name' => 'cid',
             'optional' => FALSE,
@@ -30,9 +31,9 @@ function comments_resources() {
         'access callback' => '_comments_resource_access',
         'access arguments' => array('view'),
         'access arguments append' => TRUE,
-      ),
-      'index' => array(
-        'callback' => '_comments_resource_index',
+    ),
+    'index' => array(
+      'callback' => '_comments_resource_index',
         'args' => array(
           array(
             'name' => 'page',
@@ -78,44 +79,42 @@ function _comments_resource_retrieve($cid = 0,$page = 0) {
   if($cid && $page){
   } 
   else if($cid){
-   $page=0;
+   $page = 0;
   }
-  $total_num_comment=db_result(db_query("SELECT count(*) from  comments"));
-  $result=db_query("SELECT * from  comments where cid>%d ORDER BY cid desc",$cid);
-  while($total=db_fetch_object($result)){
-        $new_comments[]=$total;
+  $total_num_comment = db_result(db_query("SELECT count(*) from  comments"));
+  $result = db_query("SELECT * from  comments where cid>%d ORDER BY cid desc",$cid);
+  while ($total = db_fetch_object($result)) {
+    $new_comments[] = $total;
   }
-  $j=0;$k=0;
-  for($i = 0; $i<count($new_comments); $i= $i+10)
-  {
-      $page_comments[$k]=array_slice($new_comments,$j,10);
-      $j=$j+10;
-      $l=$l+10;
-      $k++;
+  $start_index = 0;
+  $page_no = 0;
+  $last_index = 10;
+  for($index = 0; $index < count($new_comments); $index = $index + 10) {
+    $page_comments[$page_no] = array_slice($new_comments,$start_index,$last_index);
+    $start_index = $start_index + 10;
+    $last_index = $last_index + 10;
+    $page_no++;
   }
-  $total['total'] = $total_num_comment;
-  $total['array'] = $page_comments[$page]; 
-  return $total;
+  $recent_comment['total'] = $total_num_comment;
+  $recent_comment['array'] = $page_comments[$page]; 
+  return $recent_comment;
 }
-function _comments_resource_index($page, $fields, $parameters, $page_size) { 
-  // Limit to published nodes if user doesn't have 'administer nodes'
-  // permissions.
-  $key=array_keys($parameters);
-  $value=array_values($parameters);
-  if(empty($parameters))
-    $var=db_result(db_query("select count(*) from comments"));
-  else if($key[1])
-    $var=db_result(db_query("select count(*) from comments where $key[0]=%d && $key[1]=%d",$value[0],$value[1]));
-  else if($key[0])
-    $var=db_result(db_query("select count(*) from comments where $key[0]=%d",$value[0]));
 
+function _comments_resource_index($page, $fields, $parameters, $page_size) { 
+  $key = array_keys($parameters);
+  $value = array_values($parameters);
+  if (empty($parameters))
+    $total_no_comments = db_result(db_query("select count(*) from comments"));
+  else if ($key[1])
+    $total_no_comments = db_result(db_query("select count(*) from comments where $key[0]=%d && $key[1]=%d",$value[0],$value[1]));
+  else if ($key[0])
+    $total_no_comments = db_result(db_query("select count(*) from comments where $key[0]=%d",$value[0]));
   $query = services_resource_build_index_query('comments', 'c.timestamp DESC', $page, $fields, $parameters, 'c', 'cid', 10, 'comment');
-  // Put together array of matching nodes to return.
   $results = array();
-  while ($comments = db_fetch_object($query)) {
-    $results[] = $comments;
+  while ($results = db_fetch_object($query)) {
+    $comment[] = $results;
   }
-  $total['total'] = $var;
-  $total['array'] = $results; 
-  return $total;
+  $comments['total'] = $total_no_comments;
+  $comments['array'] = $comment; 
+  return $comments;
 }

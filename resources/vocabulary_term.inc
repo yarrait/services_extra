@@ -4,14 +4,14 @@ function _vocabulary_term_resource_access($op = 'view', $args = array()) {
   switch ($op) {
     case 'view':
      return user_access('administer taxonomy');
-   }
+  }
 }
 
 function vocabulary_term_resources() {
   $resource = array(
-      'retrieve' => array(
-        'callback' => '_vocabulary_term_resource_retrieve',
-	  'args' => array(
+    'retrieve' => array(
+      'callback' => '_vocabulary_term_resource_retrieve',
+        'args' => array(
           array(
             'name' => 'vid',
             'optional' => FALSE,
@@ -23,9 +23,9 @@ function vocabulary_term_resources() {
         'access callback' => '_vocabulary_term_resource_access',
         'access arguments' => array('view'),
         'access arguments append' => TRUE,
-      ),
-      'index' => array(
-        'callback' => '_vocabulary_term_resource_index',
+    ),
+    'index' => array(
+      'callback' => '_vocabulary_term_resource_index',
         'args' => array(
           array(
             'name' => 'page',
@@ -62,21 +62,20 @@ function vocabulary_term_resources() {
         ),
         'access arguments' => array('administer taxonomy'),
         'access arguments append' => FALSE,
-      ),
-    
+    ),
   );
   return $resource;
 }
 
 function _vocabulary_term_resource_retrieve($id) {
-  $results=taxonomy_get_tree($id);
-  return $results;
+  $vocabulary_term = taxonomy_get_tree($id);
+  return $vocabulary_term;
 }
 
 function _vocabulary_term_resource_index($page, $fields, $parameters, $page_size) { 
   $query = services_resource_build_index_query('term_data', 'vd.vid desc', $page, $fields, $parameters, 'vd', 'vid', 10, 'term_data');
-  while ($node = db_fetch_object($query)) {
-      $results[] = $node;
+  while ($results = db_fetch_object($query)) {
+      $vocabulary_term[] = $results;
   }
-  return $results;
+  return $vocabulary_term;
 }

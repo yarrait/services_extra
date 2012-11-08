@@ -3,34 +3,38 @@
 function _accessrule_resource_access($op = 'view', $args = array()) {
   switch ($op) {
     case 'view':
-     return user_access('administer users');
+      return user_access('administer users');
+      break;
     case 'update':
-       return user_access('administer users');
+      return user_access('administer users');
+      break;
     case 'delete':
-       return user_access('administer users');
+      return user_access('administer users');
+      break;
     case 'create':
-       return user_access('administer users');
+      return user_access('administer users');
+      break;
     }
 }
 function accessrule_resources() {
   $resource = array(
-      'retrieve' => array(
-        'callback' => '_accessrule_resource_retrieve',
-	  'args' => array(
+    'retrieve' => array(
+       'callback' => '_accessrule_resource_retrieve',
+        'args' => array(
           array(
-            'name' => 'aid',
-            'optional' => FALSE,
-            'source' => array('path' => 0),
-            'type' => 'int',
-            'description' => 'The aid of the accessrule to get',
+           'name' => 'aid',
+           'optional' => FALSE,
+           'source' => array('path' => 0),
+           'type' => 'int',
+           'description' => 'The aid of the accessrule to get',
           ),
         ),
         'access callback' => '_accessrule_resource_access',
         'access arguments' => array('view'),
         'access arguments append' => TRUE,
-      ),
-      'create' => array(
-        'callback' => '_accessrule_resource_create',
+    ),
+    'create' => array(
+      'callback' => '_accessrule_resource_create',
         'args' => array(
           array(
             'name' => 'access',
@@ -43,9 +47,9 @@ function accessrule_resources() {
         'access callback' => '_accessrule_resource_access',
         'access arguments' => array('create'),
         'access arguments append' => TRUE,
-      ),
-      'update' => array(
-        'callback' => '_accessrule_resource_update',
+    ),
+    'update' => array(
+      'callback' => '_accessrule_resource_update',
         'args' => array(
           array(
             'name' => 'aid',
@@ -65,9 +69,9 @@ function accessrule_resources() {
         'access callback' => '_accessrule_resource_access',
         'access arguments' => array('update'),
         'access arguments append' => TRUE,
-      ),
-      'delete' => array(
-        'callback' => '_accessrule_resource_delete',
+    ),
+    'delete' => array(
+      'callback' => '_accessrule_resource_delete',
         'args' => array(
           array(
             'name' => 'aid',
@@ -79,9 +83,9 @@ function accessrule_resources() {
         'access callback' => '_accessrule_resource_access',
         'access arguments' => array('delete'),
         'access arguments append' => TRUE,
-      ),
-      'index' => array(
-        'callback' => '_accessrule_resource_index',
+    ),
+    'index' => array(
+      'callback' => '_accessrule_resource_index',
         'args' => array(
           array(
             'name' => 'page',
@@ -118,31 +122,31 @@ function accessrule_resources() {
         ),
         'access arguments' => array('administer users'),
         'access arguments append' => FALSE,
-      ),
+    ),
   );
   return $resource;
 }
 
 function _accessrule_resource_retrieve($id) {
-  $result = db_query('SELECT * FROM access WHERE aid = %d', $id);
-  return db_fetch_object($result);
+  $accessrule_retrive = db_query('SELECT * FROM access WHERE aid = %d', $id);
+  return db_fetch_object($accessrule_retrive);
 }
 
 function _accessrule_resource_index($page, $fields, $parameters, $page_size) { 
   $query = services_resource_build_index_query('access', 'td.aid desc', $page, $fields, $parameters, 'td', 'aid', 10, 'access');
   $results = array();
   while ($node = db_fetch_object($query)) {
-      $results[] = $node;
+      $accessrule_index[] = $node;
   }
-  return services_resource_build_index_list($results, 'access','aid');
+  return services_resource_build_index_list($accessrule_index, 'access','aid');
 }
 
-function _accessrule_resource_create($access_data){
+function _accessrule_resource_create($access_data) {
   module_load_include('inc', 'user', 'user.admin');
-  $access=array();
-  $access['mask']=$access_data['access']['mask'];
-  $access['type']=$access_data['access']['type'];
-  $access['status']=$access_data['access']['status'];
+  $access = array();
+  $access['mask'] = $access_data['access']['mask'];
+  $access['type'] = $access_data['access']['type'];
+  $access['status'] = $access_data['access']['status'];
   $form_state = array();
   $form_state['values'] = $access;
   $form_state['values']['op'] = variable_get('services_rule_save_button_resource_create', t('Add rule'));
@@ -151,34 +155,34 @@ function _accessrule_resource_create($access_data){
      return services_error(implode(" ", $errors), 406, array('form_errors' => $errors));
   }
   else {
-   $aid=db_query("select aid from access order by aid desc limit 1");
-   $accessid=db_fetch_object($aid); 
-   $result['aid']=$accessid->aid;
-   $result['uri']=services_resource_uri(array('user',$accessid->aid));
+   $aid = db_query("SELECT aid FROM access ORDER By aid DESC limit 1");
+   $accessid = db_fetch_object($aid); 
+   $result['aid'] = $accessid -> aid;
+   $result['uri'] = services_resource_uri(array('user',$accessid -> aid));
   return $result;
   }
 }
 
-function _accessrule_resource_update($aid,$access){
-  $access_data=array();
-  $access_data['mask']=$access['access']['mask'];
-  $access_data['type']=$access['access']['type'];
-  $access_data['status']=$access['access']['status'];
-  if(empty($access_data['mask'])){
+function _accessrule_resource_update($aid,$access) {
+  $access_data = array();
+  $access_data['mask'] = $access['access']['mask'];
+  $access_data['type'] = $access['access']['type'];
+  $access_data['status'] = $access['access']['status'];
+  if (empty($access_data['mask'])) {
     return services_error("mask filed is required", 406,array('form_errors' => "access[mask] field is required."));
   }
   if (db_result(db_query("SELECT COUNT(*) FROM {access} WHERE  aid = %d", $aid))) {
     db_query("UPDATE {access} SET mask = '%s', type = '%s', status = '%s' WHERE aid = %d", $access_data['mask'], $access_data['type'], $access_data['status'], $aid);
-    $access_data['aid']=$aid;
+    $access_data['aid'] = $aid;
     return $access_data;
    }
   return services_error("There is no accessrule with id ".$aid,406,null);
 }
 
-function _accessrule_resource_delete($aid){
-  if(db_result(db_query('SELECT aid FROM {access} WHERE aid = %d', $aid))){
+function _accessrule_resource_delete($aid) {
+  if (db_result(db_query('SELECT aid FROM {access} WHERE aid = %d', $aid))) {
   db_query('DELETE FROM {access} WHERE aid = %d',$aid);
-  return true;
+  return TRUE;
   }
   return services_error("There is no accessrule with id ".$aid,406,null);
 }

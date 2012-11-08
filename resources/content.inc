@@ -1,19 +1,21 @@
 <?php
 
 function _content_resource_access($op = 'view', $args = array()) {
- switch ($op) {
+  switch ($op) {
     case 'view':
-     return user_access('administer nodes');
+      return user_access('administer nodes');
+      break;
     case 'create':
-     return user_access('administer nodes');
-    }
+      return user_access('administer nodes');
+      break;
+  }
 }
 
 function content_resources() {
   $resource = array(
-      'retrieve' => array(
-        'callback' => '_content_resource_retrieve',
-	  'args' => array(
+    'retrieve' => array(
+      'callback' => '_content_resource_retrieve',
+        'args' => array(
           array(
             'name' => 'nid',
             'optional' => FALSE,
@@ -25,24 +27,24 @@ function content_resources() {
         'access callback' => '_content_resource_access',
         'access arguments' => array('view'),
         'access arguments append' => TRUE,
-      ),
-       'create' => array(
-        'callback' => '_content_resource_create',
-         'args' => array(
+    ),
+    'create' => array(
+      'callback' => '_content_resource_create',
+        'args' => array(
           array(
             'name' => 'node_data',
             'optional' => FALSE,
-             'source' => 'data',
+            'source' => 'data',
             'description' => 'The content data to filter',
             'type' => 'array',
-            ),
-           ),
+          ),
+        ),
         'access callback' => '_content_resource_access',
         'access arguments' => array('create'),
         'access arguments append' => TRUE,
-      ),
-     'index' => array(
-        'callback' => '_content_resource_index',
+    ),
+    'index' => array(
+      'callback' => '_content_resource_index',
         'args' => array(
           array(
             'name' => 'page',
@@ -85,11 +87,9 @@ function content_resources() {
 }
 
 function _content_resource_retrieve($nid) {
-   global $user;
+  global $user;
   $node = node_load($nid);
-
   if ($node) {
-    // Apply field level content permissions
     if (module_exists('content') && variable_get('services_use_content_permissions', TRUE)) {
       $fields = content_fields(NULL, $node->type);
       foreach ($fields as $field_name => $field_info) {
@@ -105,101 +105,97 @@ function _content_resource_retrieve($nid) {
     return $node;
   }
   return services_error('Node nid '. $nid .' not found', 404);
-  
-   /*$result = db_query('Select n.nid,n.vid,n.type,n.language,n.title,n.uid,u.name,n.status,n.created,n.changed,n.comment,n.promote,n.moderate,n.sticky,n.tnid,
-     n.translate from node n left outer join users u on n.uid = u.uid  where nid=%d',$nid);
-   return db_fetch_object($result);*/
 }
 
 function _content_resource_index($page, $fields, $parameters, $page_size) {
-  $no_records=db_result(db_query('Select count(*) from node'));
+  $page_size = 10;
+  $total_no_records = db_result(db_query('Select count(*) from node'));
   $results = array();
   $result = db_query('Select n.nid,n.vid,n.type,n.language,n.title,n.uid,u.name,n.status,n.created,n.changed,n.comment,n.promote,n.moderate,n.sticky,n.tnid,
     n.translate from node n left outer join users u on n.uid = u.uid ORDER BY changed desc');
-    while ($node = db_fetch_object($result)){
-      $results[] = $node;
-    }
-    $j=0;$k=0;
-    for($i = 0; $i<count($results); $i= $i+10)
-    {
-        $page_node[$k]=array_slice($results,$j,10);
-        $j=$j+10;
-        $l=$l+10;
-        $k++;
-    }
-   $total['total'] = $no_records;
-   $total['contents'] = $page_node[$page]; 
-   return $total;
+  while ($node = db_fetch_object($result)){
+    $results[] = $node;
+  }
+  $start_index=0;
+  $page_no=0;
+  $last_index=10;
+  for($index = 0; $index<count($results); $index = $index + $page_size) {
+    $page_node[$page_no]=array_slice($results,$start_index,$last_index);
+    $start_index = $start_index + $page_size;
+    $last_index = $last_index + $page_size;
+    $page_no++;
+  }
+  $content['total'] = $total_no_records;
+  $content['contents'] = $page_node[$page]; 
+  return $content;
 }
 
 function _content_resource_create($node_data){
-  $return =array();
-  $option=$node_data['node']['option'];
-  $filter=$node_data['node']['filter'];
-  $page=$node_data['node']['page'];
-  $return =array();
+  $return = array();
+  $option = $node_data['node']['option'];
+  $filter = $node_data['node']['filter'];
+  $page = $node_data['node']['page'];
+  $return = array();
   if(!empty($option) && !empty($filter))
   {
-     if($option=="status")
+     if($option == "status")
      {
 	switch($filter){
           case "published":
-            $result=db_query('Select n.nid,n.vid,n.type,n.language,n.title,n.uid,u.name,n.status,n.created,n.changed,n.comment,n.promote,n.moderate,n.sticky,n.tnid,
-                    n.translate from node n left outer join users u on n.uid = u.uid WHERE  n.status = 1 and u.uid != 0');
-            while($rows=db_fetch_object($result)){
-               $results[]=$rows;
+            $result = db_query('Select n.nid,n.vid,n.type,n.language,n.title,n.uid,u.name,n.status,n.created,n.changed,n.comment,n.promote,n.moderate,
+              n.sticky,n.tnid,n.translate from node n left outer join users u on n.uid = u.uid WHERE  n.status = 1 and u.uid != 0');
+            while ($rows = db_fetch_object($result)) {
+               $results[] = $rows;
             }
             break;
    	  case "not published":
    	    $result = db_query('Select n.nid, n.vid, n.type, n.language, n.title, n.uid, u.name, n.status, n.created, n.changed, n.comment, n.promote, n.moderate, 
-                      n.sticky, n.tnid, n.translate from node n left outer join users u on n.uid = u.uid WHERE n.status = 0 and u.uid != 0');
-   	    while($rows=db_fetch_object($result)){
-               $results[]=$rows;
+              n.sticky, n.tnid, n.translate from node n left outer join users u on n.uid = u.uid WHERE n.status = 0 and u.uid != 0');
+   	    while ($rows = db_fetch_object($result)) {
+               $results[] = $rows;
             }
             break;
    	  case "promoted":
    	   $result = db_query('Select n.nid,n.vid,n.type,n.language,n.title,n.uid,u.name,n.status,n.created,n.changed,n.comment,n.promote,n.moderate,n.sticky,n.tnid,
-                     n.translate from node n left outer join users u on n.uid = u.uid WHERE n.promote = 1 and u.uid != 0');
-   	   while($rows=db_fetch_object($result)){
-               $results[]=$rows;
+             n.translate from node n left outer join users u on n.uid = u.uid WHERE n.promote = 1 and u.uid != 0');
+   	   while ($rows = db_fetch_object($result)) {
+             $results[] = $rows;
            }
            break;
           case "not promoted":
    	   $result = db_query('Select n.nid,n.vid,n.type,n.language,n.title,n.uid,u.name,n.status,n.created,n.changed,n.comment,n.promote,n.moderate,n.sticky,n.tnid,
-                     n.translate from node n left outer join users u on n.uid = u.uid WHERE n.promote = 0 and u.uid != 0');
-   	   while($rows=db_fetch_object($result)){
-               $results[]=$rows;
+             n.translate from node n left outer join users u on n.uid = u.uid WHERE n.promote = 0 and u.uid != 0');
+   	   while ($rows = db_fetch_object($result)) {
+             $results[] = $rows;
            }
            break;
           case "sticky":
    	   $result = db_query('Select n.nid,n.vid,n.type,n.language,n.title,n.uid,u.name,n.status,n.created,n.changed,n.comment,n.promote,n.moderate,n.sticky,n.tnid,
-                      n.translate from node n left outer join users u on n.uid = u.uid WHERE n.sticky = 1 and u.uid != 0');
-   	   while($rows=db_fetch_object($result)){
-              $results[]=$rows;
+             n.translate from node n left outer join users u on n.uid = u.uid WHERE n.sticky = 1 and u.uid != 0');
+   	   while ($rows = db_fetch_object($result)) {
+             $results[]=$rows;
            }
            break;
           case "not sticky":
    	   $result = db_query('Select n.nid,n.vid,n.type,n.language,n.title,n.uid,u.name,n.status,n.created,n.changed,n.comment,n.promote,n.moderate,n.sticky,n.tnid,
-                     n.translate from node n left outer join users u on n.uid = u.uid WHERE n.sticky = 0 and u.uid != 0');
-   	   while($rows=db_fetch_object($result)){
-               $results[]=$rows;
+             n.translate from node n left outer join users u on n.uid = u.uid WHERE n.sticky = 0 and u.uid != 0');
+   	   while ($rows = db_fetch_object($result)) {
+             $results[] = $rows;
            }
            break;
    	}
      }
-     if($option=="type")
-     {
-        if (db_result(db_query("SELECT COUNT(*) FROM node_type WHERE  type='$filter' "))) { 
+     if ($option == "type") {
+       if (db_result(db_query("SELECT COUNT(*) FROM node_type WHERE  type='$filter' "))) { 
               $result = db_query("Select n.nid, n.vid, n.type, n.language, n.title, n.uid, u.name, n.status, n.created, n.changed, n.comment, n.promote, n.moderate, 
-                     n.sticky, n.tnid, n.translate from node n left outer join users u on n.uid = u.uid WHERE n.type = '$filter' and n.uid != 0 ");
-   	      while($rows = db_fetch_object($result))
-              {
-                $results[]=$rows;
+                n.sticky, n.tnid, n.translate from node n left outer join users u on n.uid = u.uid WHERE n.type = '$filter' and n.uid != 0 ");
+   	      while ($rows = db_fetch_object($result)) {
+                $results[] = $rows;
               }
-         }
-        else{
-            return services_error("There is no node with type ".$filter,406,null);
-         }
+        }
+        else {
+          return services_error("There is no node with type ".$filter,406,null);
+        }
      }   
   }
   else{
@@ -207,19 +203,17 @@ function _content_resource_create($node_data){
    }
  if(empty($results))
    return services_error("There is no post available for ".$filter, 404, null);
-
-   $j=0;$k=0;$l=10;
-   for($i = 0; $i<count($results); $i= $i+10)
-   {
-       $page_content[$k]=array_slice($results,$j,$l);
-       $j=$j+10;
-       $l=$l+10;
-       $k++;
-   }
-
-   $user_total_data['total']=count($results);
-   $user_total_data['contents']=$page_content[$page];
-   return $user_total_data;
-
-
+  $page_size = 10;
+  $start_index = 0;
+  $page_no = 0;
+  $last_index = 10;
+  for ($index = 0; $index<count($results); $index = $index + $page_size) {
+    $page_content[$page_no] = array_slice($results,$start_index,$last_index);
+    $start_index = $start_index + $page_size;
+    $last_index = $last_index + $page_size;
+    $page_no++;
+  }
+  $content['total'] = count($results);
+  $content['contents'] = $page_content[$page];
+  return $content;
 }

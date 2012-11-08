@@ -1,23 +1,27 @@
 <?php
 
 function _role_resource_access($op = 'view', $args = array()) {
-   switch ($op) {
+  switch ($op) {
     case 'view':
-     return user_access('administer users');
+      return user_access('administer users');
+      break;
     case 'update':
-     return user_access('administer users');
+      return user_access('administer users');
+      break;
     case 'delete':
-     return user_access('administer users');
+      return user_access('administer users');
+      break;
     case 'create':
-     return user_access('administer users'); 
-    }
+      return user_access('administer users'); 
+      break;
+  }
 }
 
 function role_resources() {
   $resource = array(
-      'retrieve' => array(
-        'callback' => '_role_resource_retrieve',
-	  'args' => array(
+    'retrieve' => array(
+      'callback' => '_role_resource_retrieve',
+        'args' => array(
           array(
             'name' => 'rid',
             'optional' => FALSE,
@@ -29,9 +33,9 @@ function role_resources() {
         'access callback' => '_role_resource_access',
         'access arguments' => array('view'),
         'access arguments append' => TRUE,
-      ),
-      'create' => array(
-        'callback' => '_role_resource_create',
+    ),
+    'create' => array(
+      'callback' => '_role_resource_create',
         'args' => array(
           array(
             'name' => 'role',
@@ -44,9 +48,9 @@ function role_resources() {
         'access callback' => '_role_resource_access',
         'access arguments' => array('create'),
         'access arguments append' => TRUE,
-      ),
-      'update' => array(
-        'callback' => '_role_resource_update',
+    ),
+    'update' => array(
+      'callback' => '_role_resource_update',
         'args' => array(
           array(
             'name' => 'rid',
@@ -66,9 +70,9 @@ function role_resources() {
         'access callback' => '_role_resource_access',
         'access arguments' => array('update'),
         'access arguments append' => TRUE,
-      ),
-      'delete' => array(
-        'callback' => '_role_resource_delete',
+    ),
+    'delete' => array(
+      'callback' => '_role_resource_delete',
         'args' => array(
           array(
             'name' => 'rid',
@@ -80,9 +84,9 @@ function role_resources() {
         'access callback' => '_role_resource_access',
         'access arguments' => array('delete'),
         'access arguments append' => TRUE,
-      ),
-      'index' => array(
-        'callback' => '_role_resource_index',
+    ),
+    'index' => array(
+      'callback' => '_role_resource_index',
         'args' => array(
           array(
             'name' => 'page',
@@ -119,24 +123,23 @@ function role_resources() {
         ),
         'access arguments' => array('administer users'),
         'access arguments append' => FALSE,
-      ),
+    ),
   );
   return $resource;
 }
 
 function _role_resource_retrieve($id) {
-  $result = db_query('SELECT * FROM role WHERE rid = %d', $id);
-  return db_fetch_object($result);
+  $role = db_query('SELECT * FROM role WHERE rid = %d', $id);
+  return db_fetch_object($role);
 }
 
 function _role_resource_index($page, $fields, $parameters, $page_size) { 
-$query=db_query("select * from role order by rid asc");
-  $results = array();
-  while ($node = db_fetch_object($query)) {
-      $results[] = $node;
+  $query = db_query("select * from role order by rid asc");
+  $role = array();
+  while ($result = db_fetch_object($query)) {
+      $role[] = $result;
   }
-
- return services_resource_build_index_list($results, 'role','rid');
+ return services_resource_build_index_list($role, 'role','rid');
 }
 
 function _role_resource_create($role){
@@ -149,40 +152,40 @@ function _role_resource_create($role){
   if ($errors = form_get_errors()) {
     return services_error(implode(" ", $errors), 406, array('form_errors' => $errors));
   } 
-  else{
-   $rid=db_query("select rid from role order by rid desc limit 1");
-   $roleid=db_fetch_object($rid); 
-   $result['rid']=$roleid->rid;
-   $result['uri']=services_resource_uri(array('user',$roleid->rid));
-  return $result;
+  else {
+    $rid = db_query("select rid from role order by rid desc limit 1");
+    $roleid = db_fetch_object($rid); 
+    $role_service_uri['rid']=$roleid -> rid;
+    $role_service_uri['uri']=services_resource_uri(array('user',$roleid -> rid));
+    return $role_service_uri;
   }
 }
 
 function _role_resource_update($rid, $role){
   $role = _services_arg_value($role, 'roles');
   $role['rid'] = $rid;
-  $role =$role['role']['name'];
-  if(empty($role)){
+  $role_name =$role['role']['name'];
+  if (empty($role)) {
     return services_error("role name filed is required", 406,array('form_errors' => "role[name] field is required."));
   }
-  if(db_result(db_query("SELECT COUNT(*) FROM {role} WHERE  rid = %d", $rid))) {
-      db_query("UPDATE {role} SET name = '%s' WHERE rid = %d", $role, $rid);
-      $return['role'] =$role;
-      $return['rid'] =$rid;
-     return $return;
-    }
+  if (db_result(db_query("SELECT COUNT(*) FROM {role} WHERE  rid = %d", $rid))) {
+    db_query("UPDATE {role} SET name = '%s' WHERE rid = %d", $role_name, $rid);
+    $role_service_uri['role'] =$role;
+    $role_service_uri['rid'] =$rid;
+    return $role_service_uri;
+  }
   return services_error("There is no role with id ".$rid, 406,null);
 }
 
 function _role_resource_delete($rid){
-  if($rid==1 || $rid==2){
+  if ($rid == 1 || $rid == 2) {
     return services_error("your request will not accepted ",212,null);
   }	
-  if(db_result(db_query('SELECT rid FROM {role} WHERE rid = %d', $rid))){
+  if (db_result(db_query('SELECT rid FROM {role} WHERE rid = %d', $rid))) {
     db_query('DELETE FROM {role} WHERE rid = %d',$rid);
     db_query('DELETE FROM {permission} WHERE rid = %d',$rid);
     db_query('DELETE FROM {users_roles} WHERE rid = %d',$rid);
-  return true;
+  return TRUE;
   }
   return services_error("There is no role with id ".$rid,406,null);
 }

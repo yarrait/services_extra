@@ -107,32 +107,29 @@ function _permission_module_user_resource_retrieve($module = NULL, $role = 0) {
     while ($role_record = db_fetch_object($result)) {
       $role_permissions = $role_record->perm;
     } 
-  $role_permissions = explode(", ",$role_permissions);
-  $permissions = module_invoke($module, 'perm');
-  $count1=count($role_permissions);$count=count($permissions);
-  for($i = 0; $i<$count1; $i++) 
-  {
-     for($j=0;$j<$count;$j++)
-      {
-       if($permissions[$j] == $role_permissions[$i])
-       {
-         $match_array['Enable'][] = $permissions[$j];
-       }
+    $role_permissions = explode(", ",$role_permissions);
+    $permissions = module_invoke($module, 'perm');
+    $count1=count($role_permissions);$count=count($permissions);
+    for ($i = 0; $i<$count1; $i++) {
+      for ($j=0;$j<$count;$j++) {
+        if ($permissions[$j] == $role_permissions[$i]) {
+          $match_array['Enable'][] = $permissions[$j];
+        }
       }
-  }
-  if(empty($match_array))
+    }
+  if (empty($match_array))
      return services_error("There are no anabled permissions for ".$role_name->name , 404,null);
   else
      return $match_array;
 }
-  else if($module && !$role) {
+  else if ($module && !$role) {
     $output[$module]=module_invoke($module, 'perm');
     return $output;
   }
  return services_error('No module with ' .$module.' found.', 404);
 }
 
-function _permission_module_user_resource_index($page, $fields, $parameters, $page_size){
+function _permission_module_user_resource_index($page, $fields, $parameters, $page_size) {
   foreach (module_list(FALSE, FALSE, TRUE) as $module) {
     if ($permissions = module_invoke($module, 'perm')) {
            $module_list["modules"][] = $module;

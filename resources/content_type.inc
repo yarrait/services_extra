@@ -3,15 +3,15 @@
 function _content_type_resource_access($op = 'view', $args = array()) {
   switch ($op) {
     case 'view':
-     return user_access('administer content types');
-   }
+      return user_access('administer content types');
+  }
 }
 
 function content_type_resources() {
   $resource = array(
-     'retrieve' => array(
-        'callback' => '_content_type_resource_retrieve',
-	  'args' => array(
+    'retrieve' => array(
+      'callback' => '_content_type_resource_retrieve',
+        'args' => array(
           array(
             'name' => 'type',
             'optional' => FALSE,
@@ -23,9 +23,9 @@ function content_type_resources() {
         'access callback' => '_content_type_resource_access',
         'access arguments' => array('view'),
         'access arguments append' => TRUE,
-      ),
-     'index' => array(
-        'callback' => '_content_type_resource_index',
+    ),
+    'index' => array(
+      'callback' => '_content_type_resource_index',
         'args' => array(
           array(
             'name' => 'page',
@@ -68,15 +68,15 @@ function content_type_resources() {
 }
 
 function _content_type_resource_retrieve($value) {
-  $result = db_query("SELECT * FROM node_type WHERE type = '$value' ");
-  return db_fetch_object($result);
+  $content_type = db_query("SELECT * FROM node_type WHERE type = '$value' ");
+  return db_fetch_object($content_type);
 }
 
-function _content_type_resource_index($page, $fields, $parameters, $page_size){ 
+function _content_type_resource_index($page, $fields, $parameters, $page_size) { 
   $query = services_resource_build_index_query('node_type', 'td.name asc', $page, $fields, $parameters, 'td', 'type', 10, 'node_type');
-  $results = array();
+  $content_type = array();
   while ($node = db_fetch_object($query)) {
-      $results[] = $node;
+      $content_type[] = $node;
   }
-  return services_resource_build_index_list($results, 'node_type','type');
+  return services_resource_build_index_list($content_type, 'node_type','type');
 }
