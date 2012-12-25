@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Gets access rules.
+ *
+ * @param string $op
+ *  $op - Permission requested.
+ * @return Boolean
+ *  Boolean TRUE if the current user has the requested permission.
+ */
 function _backup_migrate_destination_resource_access($op = 'view', $args = array()) {
   switch ($op) {
     case 'view':
@@ -12,6 +20,12 @@ function _backup_migrate_destination_resource_access($op = 'view', $args = array
 }
 
 
+/**
+ * Gets all resource definitions.
+ *
+ * @return array
+ *  An array containing all resources.
+ */
 function backup_migrate_destination_resources() { 
   $resource = array(
     'index' => array(
@@ -54,6 +68,12 @@ function backup_migrate_destination_resources() {
   return $resource;
 }
 
+/**
+ * Returns list of destinations. 
+ *
+ * @return
+ *   list of destinations.
+ */
 function _backup_migrate_destination_index() { 
   module_load_include('inc', 'backup_migrate', 'includes/crud');
   $out = '';
@@ -65,9 +85,12 @@ function _backup_migrate_destination_index() {
   }
 }
 
-
 /**
- * List the backup files in the given destination.
+ * Returns backup files in the given destination.
+ * @param $destination_id
+ *  $destination_id - destination_id (manual, scheduled, etc).
+ * @return
+ *   list of destination files.
  */
 function _backup_migrate_destination_display_files($destination_id = NULL) { 
   module_load_include('inc', 'backup_migrate', 'includes/destinations'); 
@@ -123,6 +146,13 @@ function _backup_migrate_destination_display_files($destination_id = NULL) {
 }
 
 
+/**
+ * Returns success message on restore or delete else service error.
+ * @param $data
+ *  $data - restore or delete data (like filename, destination_id, etc..).
+ * @return
+ *   success message or service error.
+ */
 function _backup_migrate_backup_restore_or_delete($data) { 
   include_once(DRUPAL_ROOT . '/' . drupal_get_path('module', 'backup_migrate') . '/backup_migrate.module');
   module_load_include('inc', 'backup_migrate', 'includes/filters'); 

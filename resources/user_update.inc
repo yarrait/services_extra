@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Gets access rules.
+ *
+ * @param $op
+ *  $op - Permission requested
+ * @return Boolean
+ *  Boolean TRUE if the current user has the requested permission
+ */
 function _user_update_resource_access($op = 'view', $args = array()) {
   switch ($op) {
     case 'create':
@@ -8,6 +16,12 @@ function _user_update_resource_access($op = 'view', $args = array()) {
    }
 }
 
+/**
+ * Gets all resource definitions.
+ *
+ * @return array
+ *  An array containing all resources.
+ */
 function user_update_resources() {
   $resource = array(
     'create' => array(
@@ -29,6 +43,14 @@ function user_update_resources() {
   return $resource;
 }
 
+/**
+ * Returns Boolean
+ *
+ * @param $user_data
+ *   $user_data - user data to update
+ * @return
+ *   Boolean TRUE on success else FALSE
+ */
 function _user_update_resource_create($user_data) {
   $return = array();
   $user_total = count($user_data['user']);

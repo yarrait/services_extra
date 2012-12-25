@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Gets access rules.
+ *
+ * @param $op
+ *  $op - Permission requested
+ * @return Boolean
+ *  Boolean TRUE if the current user has the requested permission
+ */
 function _role_resource_access($op = 'view', $args = array()) {
   switch ($op) {
     case 'view':
@@ -17,6 +25,12 @@ function _role_resource_access($op = 'view', $args = array()) {
   }
 }
 
+/**
+ * Gets all resource definitions.
+ *
+ * @return array
+ *  An array containing all resources.
+ */
 function role_resources() {
   $resource = array(
     'retrieve' => array(
@@ -128,11 +142,30 @@ function role_resources() {
   return $resource;
 }
 
+/**
+ * Returns the role retrieved. 
+ *
+ * @param $id
+ *   $id - role id
+ * @return
+ *   role retrieved
+ */
 function _role_resource_retrieve($id) {
   $role = db_query('SELECT * FROM role WHERE rid = %d', $id);
   return db_fetch_object($role);
 }
 
+/**
+ * Returns role list. 
+ *
+ * @param $page $fields $parameters $page_size
+ *   $page - The page number
+ *   $fields - role fields
+ *   $parameters - role parameters
+ *   $page_size - page size
+ * @return
+ *   role list
+ */
 function _role_resource_index($page, $fields, $parameters, $page_size) { 
   $query = db_query("select * from role order by rid asc");
   $role = array();
@@ -142,6 +175,14 @@ function _role_resource_index($page, $fields, $parameters, $page_size) {
  return services_resource_build_index_list($role, 'role','rid');
 }
 
+/**
+ * Returns created role
+ *
+ * @param $role
+ *   $role - data to create role
+ * @return
+ *   created role
+ */
 function _role_resource_create($role){
   $role = _services_arg_value($role, 'role');
   module_load_include('inc', 'user', 'user.admin');
@@ -161,6 +202,15 @@ function _role_resource_create($role){
   }
 }
 
+/**
+ * Returns updated role
+ *
+ * @param $rid $role
+ *   $rid - role id
+ *   $role - data to update role
+ * @return
+ *   updated role
+ */
 function _role_resource_update($rid, $role){
   $role = _services_arg_value($role, 'roles');
   $role['rid'] = $rid;
@@ -177,6 +227,14 @@ function _role_resource_update($rid, $role){
   return services_error("There is no role with id ".$rid, 406,null);
 }
 
+/**
+ * Returns Boolean value
+ *
+ * @param $rid
+ *   $rid - role id
+ * @return
+ *  Boolean TRUE if the role is deleted else FALSE
+ */
 function _role_resource_delete($rid){
   if ($rid == 1 || $rid == 2) {
     return services_error("your request will not accepted ",212,null);

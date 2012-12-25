@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Gets access rules.
+ *
+ * @param $op
+ *  $op - Permission requested
+ * @return Boolean
+ *  Boolean TRUE if the current user has the requested permission
+ */
 function _content_type_resource_access($op = 'view', $args = array()) {
   switch ($op) {
     case 'view':
@@ -7,6 +15,12 @@ function _content_type_resource_access($op = 'view', $args = array()) {
   }
 }
 
+/**
+ * Gets all resource definitions.
+ *
+ * @return array
+ *  An array containing all resources.
+ */
 function content_type_resources() {
   $resource = array(
     'retrieve' => array(
@@ -67,11 +81,30 @@ function content_type_resources() {
   return $resource;
 }
 
+/**
+ * Returns the content retrived. 
+ *
+ * @param $value
+ *   $value - content type value
+ * @return
+ *   content retrived
+ */
 function _content_type_resource_retrieve($value) {
   $content_type = db_query("SELECT * FROM node_type WHERE type = '$value' ");
   return db_fetch_object($content_type);
 }
 
+/**
+ * Returns content list. 
+ *
+ * @param $page $fields $parameters $page_size
+ *   $page - The page number
+ *   $fields - content fields
+ *   $parameters - content parameters
+ *   $page_size - page size
+ * @return
+ *   An array of content list.
+ */
 function _content_type_resource_index($page, $fields, $parameters, $page_size) { 
   $query = services_resource_build_index_query('node_type', 'td.name asc', $page, $fields, $parameters, 'td', 'type', 10, 'node_type');
   $content_type = array();

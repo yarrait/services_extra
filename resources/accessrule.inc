@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Gets access rules.
+ *
+ * @param $op
+ *  $op - Permission requested.
+ * @return Boolean
+ *  Boolean TRUE if the current user has the requested permission.
+ */
 function _accessrule_resource_access($op = 'view', $args = array()) {
   switch ($op) {
     case 'view':
@@ -16,6 +24,13 @@ function _accessrule_resource_access($op = 'view', $args = array()) {
       break;
     }
 }
+
+/**
+ * Gets all resource definitions.
+ *
+ * @return array
+ *  An array containing all resources.
+ */
 function accessrule_resources() {
   $resource = array(
     'retrieve' => array(
@@ -127,11 +142,30 @@ function accessrule_resources() {
   return $resource;
 }
 
+/**
+ * Returns the accessrule retrived. 
+ *
+ * @param $id
+ *   The aid of the accessrule to get.
+ * @return
+ *   Accessrule retrived.
+ */
 function _accessrule_resource_retrieve($id) {
   $accessrule_retrive = db_query('SELECT * FROM access WHERE aid = %d', $id);
   return db_fetch_object($accessrule_retrive);
 }
 
+/**
+ * Returns available the accessrules list. 
+ *
+ * @param $page $fields $parameters $page_size
+ *   $page - The page number.
+ *   $fields - accessrule fields
+ *   $parameters - accessrule parameters (name, type etc..)
+ *   $page_size - page size
+ * @return
+ *   An array of accessrule retrived.
+ */
 function _accessrule_resource_index($page, $fields, $parameters, $page_size) { 
   $query = services_resource_build_index_query('access', 'td.aid desc', $page, $fields, $parameters, 'td', 'aid', 10, 'access');
   $results = array();
@@ -141,6 +175,14 @@ function _accessrule_resource_index($page, $fields, $parameters, $page_size) {
   return services_resource_build_index_list($accessrule_index, 'access','aid');
 }
 
+/**
+ * Returns newly created accessrule. 
+ *
+ * @param $access_data
+ *   $access_data - Data to create accessrule.
+ * @return
+ *   An accessrule created.
+ */
 function _accessrule_resource_create($access_data) {
   module_load_include('inc', 'user', 'user.admin');
   $access = array();
@@ -163,6 +205,15 @@ function _accessrule_resource_create($access_data) {
   }
 }
 
+/**
+ * Returns updated accessrule. 
+ *
+ * @param $aid
+ *   $aid - accessrule Id.
+ *   $access - accessrule data.
+ * @return
+ *   An updated accessrule.
+ */
 function _accessrule_resource_update($aid,$access) {
   $access_data = array();
   $access_data['mask'] = $access['access']['mask'];

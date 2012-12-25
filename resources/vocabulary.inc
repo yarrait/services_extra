@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Gets access rules.
+ *
+ * @param $op
+ *  $op - Permission requested
+ * @return Boolean
+ *  Boolean TRUE if the current user has the requested permission
+ */
 function _vocabulary_resource_access($op = 'view', $args = array()) {
   switch ($op) {
     case 'view':
@@ -8,6 +16,12 @@ function _vocabulary_resource_access($op = 'view', $args = array()) {
   }
 }
 
+/**
+ * Gets all resource definitions.
+ *
+ * @return array
+ *  An array containing all resources.
+ */
 function vocabulary_resources() {
   $node_resource = array(
     'retrieve' => array(
@@ -69,11 +83,30 @@ function vocabulary_resources() {
   return $node_resource;
 }
 
+/**
+ * Returns vocabulary retrieved
+ *
+ * @param $id
+ *   $id - vocabulary id
+ * @return
+ *   vocabulary retrieved
+ */
 function _vocabulary_resource_retrieve($id) {
   $vocabulary = db_query('SELECT w.*, u.type FROM {vocabulary} w INNER JOIN {vocabulary_node_types} u ON w.vid = u.vid WHERE w.vid = %d', $id);
   return db_fetch_object($vocabulary);
 }
 
+/**
+ * Returns vocabulary list
+ *
+ * @param $page $fields $parameters $page_size
+ *   $page - The page number
+ *   $fields - vocabulary fields
+ *   $parameters - vocabulary parameters
+ *   $page_size - page size
+ * @return
+ *   vocabulary list
+ */
 function _vocabulary_resource_index($page, $fields, $parameters, $page_size) { 
   $page_size = 10;
   $start_index = 0;

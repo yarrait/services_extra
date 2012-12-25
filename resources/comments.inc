@@ -1,5 +1,14 @@
 <?php
 
+
+/**
+ * Gets access rules.
+ *
+ * @param $op
+ *  $op - Permission requested
+ * @return Boolean
+ *  Boolean TRUE if the current user has the requested permission
+ */
 function _comments_resource_access($op = 'view', $args = array()) {
   switch ($op) {
     case 'view':
@@ -8,6 +17,12 @@ function _comments_resource_access($op = 'view', $args = array()) {
     }
   }
 
+/**
+ * Gets all resource definitions.
+ *
+ * @return array
+ *  An array containing all resources.
+ */
 function comments_resources() {
   $resource = array(
     'retrieve' => array(
@@ -75,10 +90,20 @@ function comments_resources() {
   return $resource;
 }
 
+
+/**
+ * Returns the comment retrived. 
+ *
+ * @param $cid $page
+ *   $cid - comment id
+ *   $page - page number
+ * @return
+ *   comment retrived.
+ */
 function _comments_resource_retrieve($cid = 0,$page = 0) {
-  if($cid && $page){
+  if($cid && $page) {
   } 
-  else if($cid){
+  else if($cid) {
    $page = 0;
   }
   $total_num_comment = db_result(db_query("SELECT count(*) from  comments"));
@@ -101,6 +126,18 @@ function _comments_resource_retrieve($cid = 0,$page = 0) {
   return $recent_comment;
 }
 
+
+/**
+ * Returns comments list. 
+ *
+ * @param $page $fields $parameters $page_size
+ *   $page - The page number
+ *   $fields - comment fields
+ *   $parameters - comment parameters
+ *   $page_size - page size
+ * @return
+ *   An array of comment retrived.
+ */
 function _comments_resource_index($page, $fields, $parameters, $page_size) { 
   $key = array_keys($parameters);
   $value = array_values($parameters);

@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Gets access rules.
+ *
+ * @param $op
+ *  $op - Permission requested
+ * @return Boolean
+ *  Boolean TRUE if the current user has the requested permission
+ */
 function _content_resource_access($op = 'view', $args = array()) {
   switch ($op) {
     case 'view':
@@ -11,6 +19,12 @@ function _content_resource_access($op = 'view', $args = array()) {
   }
 }
 
+/**
+ * Gets all resource definitions.
+ *
+ * @return array
+ *  An array containing all resources.
+ */
 function content_resources() {
   $resource = array(
     'retrieve' => array(
@@ -86,6 +100,14 @@ function content_resources() {
   return $resource;
 }
 
+/**
+ * Returns the node retrived. 
+ *
+ * @param $nid
+ *   $nid - node id
+ * @return
+ *   node retrived
+ */
 function _content_resource_retrieve($nid) {
   global $user;
   $node = node_load($nid);
@@ -107,6 +129,17 @@ function _content_resource_retrieve($nid) {
   return services_error('Node nid '. $nid .' not found', 404);
 }
 
+/**
+ * Returns nodes list. 
+ *
+ * @param $page $fields $parameters $page_size
+ *   $page - The page number
+ *   $fields - node fields
+ *   $parameters - node parameters
+ *   $page_size - page size
+ * @return
+ *   An array of nodes retrived.
+ */
 function _content_resource_index($page, $fields, $parameters, $page_size) {
   $page_size = 10;
   $total_no_records = db_result(db_query('Select count(*) from node'));
@@ -130,6 +163,14 @@ function _content_resource_index($page, $fields, $parameters, $page_size) {
   return $content;
 }
 
+/**
+ * Returns created node. 
+ *
+ * @param $node_data
+ *   $node_data - data to create node
+ * @return
+ *   created node
+ */
 function _content_resource_create($node_data){
   $return = array();
   $option = $node_data['node']['option'];

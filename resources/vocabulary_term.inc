@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Gets access rules.
+ *
+ * @param $op
+ *  $op - Permission requested
+ * @return Boolean
+ *  Boolean TRUE if the current user has the requested permission
+ */
 function _vocabulary_term_resource_access($op = 'view', $args = array()) {
   switch ($op) {
     case 'view':
@@ -8,6 +16,12 @@ function _vocabulary_term_resource_access($op = 'view', $args = array()) {
   }
 }
 
+/**
+ * Gets all resource definitions.
+ *
+ * @return array
+ *  An array containing all resources.
+ */
 function vocabulary_term_resources() {
   $resource = array(
     'retrieve' => array(
@@ -68,11 +82,30 @@ function vocabulary_term_resources() {
   return $resource;
 }
 
+/**
+ * Returns vocabulary term retrieved
+ *
+ * @param $id
+ *   $id - vocabulary id
+ * @return
+ *   vocabulary term retrieved
+ */
 function _vocabulary_term_resource_retrieve($id) {
   $vocabulary_term = taxonomy_get_tree($id);
   return $vocabulary_term;
 }
 
+/**
+ * Returns vocabulary term list
+ *
+ * @param $page $fields $parameters $page_size
+ *   $page - The page number
+ *   $fields - vocabulary term fields
+ *   $parameters - vocabulary term parameters
+ *   $page_size - page size
+ * @return
+ *   vocabulary term list
+ */
 function _vocabulary_term_resource_index($page, $fields, $parameters, $page_size) { 
   $query = services_resource_build_index_query('term_data', 'vd.vid desc', $page, $fields, $parameters, 'vd', 'vid', 10, 'term_data');
   while ($results = db_fetch_object($query)) {

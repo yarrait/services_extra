@@ -1,6 +1,14 @@
 <?php
 
 
+/**
+ * Gets access rules.
+ *
+ * @param $op
+ *  $op - Permission requested
+ * @return Boolean
+ *  Boolean TRUE if the current user has the requested permission
+ */
 function _form_content_resource_access($op = 'view', $args = array()) {
   switch ($op) {
     case 'view':
@@ -11,6 +19,12 @@ function _form_content_resource_access($op = 'view', $args = array()) {
 
 
 
+/**
+ * Gets all resource definitions.
+ *
+ * @return array
+ *  An array containing all resources.
+ */
 function form_content_resources() {
   $resource = array(
     'retrieve' => array(
@@ -33,6 +47,14 @@ function form_content_resources() {
 }
 
 
+/**
+ * Returns the form structure. 
+ *
+ * @param $type
+ *   $type - content type name
+ * @return
+ *   form structure
+ */
 function _form_content_resources_retrieve($type) { 
   module_load_include('inc', 'node', 'node.pages');
   global $user;
@@ -57,7 +79,6 @@ function _form_content_resources_retrieve($type) {
   }
 
   return $form;
-
 }
 
 
@@ -125,7 +146,7 @@ function druproid_convert_form_options_to_strict_array(&$form) {
   }
 }
 
-
+// gets the form structure from form_id
 
 function druproid_get_form($form_id) { 
 

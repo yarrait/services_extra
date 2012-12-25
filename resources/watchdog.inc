@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Gets access rules.
+ *
+ * @param $op
+ *  $op - Permission requested
+ * @return Boolean
+ *  Boolean TRUE if the current user has the requested permission
+ */
 function _watchdog_resource_access($op = 'view', $args = array()) {
   switch ($op) {
     case 'view':
@@ -8,6 +16,12 @@ function _watchdog_resource_access($op = 'view', $args = array()) {
   }
 }
 
+/**
+ * Gets all resource definitions.
+ *
+ * @return array
+ *  An array containing all resources.
+ */
 function watchdog_resources() {
   $resource = array(
     'retrieve' => array(
@@ -68,11 +82,30 @@ function watchdog_resources() {
   return $resource;
 }
 
+/**
+ * Returns watchdog retrieved
+ *
+ * @param $id
+ *   $id - watchdog id
+ * @return
+ *   watchdog retrieved
+ */
 function _watchdog_resource_retrieve($id) {
   $watchdog = db_query('SELECT w.*, u.name, u.uid FROM {watchdog} w INNER JOIN {users} u ON w.uid = u.uid WHERE w.wid = %d', $id);
   return db_fetch_object($watchdog);
 }
 
+/**
+ * Returns watchdog list
+ *
+ * @param $page $fields $parameters $page_size
+ *   $page - The page number
+ *   $fields - watchdog fields
+ *   $parameters - watchdog parameters
+ *   $page_size - page size
+ * @return
+ *   watchdog list
+ */
 function _watchdog_resource_index($page, $fields, $parameters, $page_size) { 
   $no_records = db_result(db_query('Select count(*) from watchdog'));
   $watchdog_data['total'] = $no_records;

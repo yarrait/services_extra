@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Gets access rules.
+ *
+ * @param $op
+ *  $op - Permission requested
+ * @return Boolean
+ *  Boolean TRUE if the current user has the requested permission
+ */
 function _permission_module_user_resource_access($op = 'view', $args = array()) {
   switch ($op) {
     case 'view':
@@ -11,6 +19,12 @@ function _permission_module_user_resource_access($op = 'view', $args = array()) 
   }
 }
 
+/**
+ * Gets all resource definitions.
+ *
+ * @return array
+ *  An array containing all resources.
+ */
 function user_permission_resources() {
   $resource = array(
     'retrieve' => array(
@@ -100,6 +114,15 @@ function user_permission_resources() {
   return $resource;
 }
 
+/**
+ * Returns permission retrieved
+ *
+ * @param $module $role
+ *   $module - module information
+ *   $role - module role
+ * @return
+ *   permission retrieved
+ */
 function _permission_module_user_resource_retrieve($module = NULL, $role = 0) {
 //permission_module_user/block?role=1
   if ($module && $role) {
@@ -132,6 +155,17 @@ function _permission_module_user_resource_retrieve($module = NULL, $role = 0) {
   return services_error('No module with ' .$module.' found.', 404);
 }
 
+/**
+ * Returns permission list
+ *
+ * @param $page $fields $parameters $page_size
+ *   $page - The page number
+ *   $fields - permission fields
+ *   $parameters - permission parameters
+ *   $page_size - page size
+ * @return
+ *   permission list
+ */
 function _permission_module_user_resource_index($page, $fields, $parameters, $page_size) {
   foreach (module_list(FALSE, FALSE, TRUE) as $module) {
     if ($permissions = module_invoke($module, 'perm')) {
@@ -141,6 +175,15 @@ function _permission_module_user_resource_index($page, $fields, $parameters, $pa
   return $module_list;
 }
 
+/**
+ * Returns updated permissions
+ *
+ * @param $rid $role
+ *   $rid - permission id
+ *   $permissions - permissions data
+ * @return
+ *   updated permissions
+ */
 function _permission_module_user_resource_update($rid, $permissions) {
   $return = array();
   $final_perm = array();

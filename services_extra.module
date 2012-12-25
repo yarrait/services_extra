@@ -1,5 +1,7 @@
 <?php
 
+// Files to include in our module 
+
 module_load_include('inc', 'services_extra', 'resources/watchdog');
 module_load_include('inc', 'services_extra', 'resources/user_permission');
 module_load_include('inc', 'services_extra', 'resources/vocabulary_term');
@@ -12,13 +14,12 @@ module_load_include('inc', 'services_extra', 'resources/content_update');
 module_load_include('inc', 'services_extra', 'resources/vocabulary');
 module_load_include('inc', 'services_extra', 'resources/comments'); 
 module_load_include('inc', 'services_extra', 'resources/user_filter');
-<<<<<<< HEAD
 module_load_include('inc', 'services_extra', 'resources/form_content');
 module_load_include('inc', 'services_extra', 'resources/backup_migrate');
 module_load_include('inc', 'services_extra', 'resources/backup_migrate_detination');
 
-=======
->>>>>>> 6b3d885b4dd1e9962d1d930cfe3873252e03cb30
+// Following are the custom resources for our module
+
 function services_extra_services_resources() {
   $resources = array();
   $resources['watchdog'] = watchdog_resources();
@@ -33,16 +34,9 @@ function services_extra_services_resources() {
   $resources['vocabulary'] = vocabulary_resources();
   $resources['comments'] = comments_resources();
   $resources['user_filter'] = user_filter_resources();
-<<<<<<< HEAD
   $resources['form_content'] = form_content_resources();
   $resources['backup_migrate'] = backup_migrate_resources();
   $resources['backup_migrate_destination'] = backup_migrate_destination_resources();
+
   return $resources;
 }
-
-
-=======
- return $resources;
-}
-
->>>>>>> 6b3d885b4dd1e9962d1d930cfe3873252e03cb30

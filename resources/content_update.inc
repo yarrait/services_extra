@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Gets access rules.
+ *
+ * @param $op
+ *  $op - Permission requested
+ * @return Boolean
+ *  Boolean TRUE if the current user has the requested permission
+ */
 function _content_update_resource_access($op = 'view', $args = array()) {
   switch ($op) {
     case 'create':
@@ -8,6 +16,12 @@ function _content_update_resource_access($op = 'view', $args = array()) {
   }
 }
 
+/**
+ * Gets all resource definitions.
+ *
+ * @return array
+ *  An array containing all resources.
+ */
 function content_update_resources() {
   $resource = array(
     'create' => array(
@@ -29,6 +43,14 @@ function content_update_resources() {
   return $resource;
 }
 
+/**
+ * Returns updated content. 
+ *
+ * @param $content_data
+ *   $content_data - content data to update
+ * @return 
+ *   true if updated else service error
+ */
 function _content_update_resource_create($content_data){
   $result = array();
   $option=$content_data['option'];

@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Gets access rules.
+ *
+ * @param string $op
+ *  $op - Permission requested.
+ * @return Boolean
+ *  Boolean TRUE if the current user has the requested permission.
+ */
 function _backup_migrate_resource_access($op = 'view', $args = array()) {
   switch ($op) {
     case 'view':
@@ -11,7 +19,12 @@ function _backup_migrate_resource_access($op = 'view', $args = array()) {
   }
 }
 
-
+/**
+ * Gets all resource definitions.
+ *
+ * @return array
+ *  An array containing all resources.
+ */
 function backup_migrate_resources() { 
   $resource = array(
     'index' => array(
@@ -39,7 +52,12 @@ function backup_migrate_resources() {
   return $resource;
 }
 
-
+/**
+ * Returns list of available Sources, Destinations and Profiles . 
+ *
+ * @return
+ *   list of available Sources, Destinations and Profiles.
+ */
 function _backup_migrate_index() { 
   module_load_include('inc', 'backup_migrate', 'includes/destinations');
   module_load_include('inc', 'backup_migrate', 'includes/profiles');
@@ -58,6 +76,14 @@ function _backup_migrate_index() {
   return $list;
 }
 
+
+/**
+ * Returns success message on creation of backup else service error. 
+ * @param $backup_data
+ *  $backup_data - Required data to create backup (Like, source_id, destination_id, profile_id).
+ * @return
+ *   success message on creation of backup else service error.
+ */
 function _backup_migrate_quickbackup_create($backup_data) { 
   include_once(DRUPAL_ROOT . '/' . drupal_get_path('module', 'backup_migrate') . '/backup_migrate.module');
   module_load_include('inc', 'backup_migrate', 'includes/destinations');
