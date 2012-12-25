@@ -30,10 +30,17 @@ function user_filter_resources() {
 }
 
 function _user_filter_resource_create($user_data){
+<<<<<<< HEAD
   $return = array();
   $option = $user_data['user']['option'];
   $filter = $user_data['user']['filter'];
   $page = $user_data['user']['page'];
+=======
+  $return =array();
+  $option=$user_data['user']['option'];
+  $filter=$user_data['user']['filter'];
+  $page=$user_data['user']['page'];
+>>>>>>> 6b3d885b4dd1e9962d1d930cfe3873252e03cb30
   
   if (empty($option) || empty($filter)) {
     return services_error("option or filter field is requried" ,406,array('form_errors' => "option or uid field is requried."));
@@ -42,15 +49,25 @@ function _user_filter_resource_create($user_data){
      $no_records = db_result(db_query('Select count(*) from users_roles r inner join users u on r.uid = u.uid where r.rid=%d',$filter));
      $result = db_query('Select u.uid from users_roles r inner join users u on r.uid = u.uid where r.rid=%d ORDER BY uid DESC',$filter);
      while($row = db_fetch_object($result)){
+<<<<<<< HEAD
            $user_details[] = user_load($row->uid);
+=======
+           $user_details[]=user_load($row->uid);
+>>>>>>> 6b3d885b4dd1e9962d1d930cfe3873252e03cb30
      }
   }
   else if ($option == "permission") {
     $role = db_query('select rid from role where rid!=1');
     while($row = db_fetch_object($role)) {
+<<<<<<< HEAD
       $result[] = $row->rid;
     }
     for ($i = 0; $i<count($result); $i++) {
+=======
+      $result[]=$row->rid;
+    }
+    for ($i = 0;$i<count($result);$i++) {
+>>>>>>> 6b3d885b4dd1e9962d1d930cfe3873252e03cb30
       $perm = db_query('select perm from permission where rid=%d',$result[$i]);
       while ($rows = db_fetch_object($perm)){
         $results = $rows->perm;
@@ -98,6 +115,7 @@ function _user_filter_resource_create($user_data){
       }
       return $root_user_detail;
     }
+<<<<<<< HEAD
     
 //    $user_root = db_fetch_object(db_query("SELECT uid FROM users WHERE uid =1")); 
     
@@ -106,6 +124,14 @@ function _user_filter_resource_create($user_data){
     $size_array = count($merge_user);
     for ($i = 0; $i < $size_array; $i++) {
       for ($j = 0; $j < $size_array; $j++) {
+=======
+    $user_root = db_fetch_object(db_query("SELECT uid FROM users WHERE uid =1")); 
+    $root_user_detail[] = user_load($user_root->uid);
+    $merge_user = array_merge($final_array,$root_user_detail);
+    $size_array = count($merge);
+    for ($i = 0;$i < $size_array; $i++) {
+      for ($j = 0;$j < $size_array; $j++) {
+>>>>>>> 6b3d885b4dd1e9962d1d930cfe3873252e03cb30
         if ($i == $j) {
           continue;
         }
