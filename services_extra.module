@@ -13,7 +13,8 @@ module_load_include('inc', 'services_extra', 'resources/vocabulary');
 module_load_include('inc', 'services_extra', 'resources/comments'); 
 module_load_include('inc', 'services_extra', 'resources/user_filter');
 module_load_include('inc', 'services_extra', 'resources/form_content');
-module_load_include('inc', 'services_extra', 'resources/backup_migrate_sdlist');
+module_load_include('inc', 'services_extra', 'resources/backup_migrate');
+module_load_include('inc', 'services_extra', 'resources/backup_migrate_detination');
 
 function services_extra_services_resources() {
   $resources = array();
@@ -30,7 +31,8 @@ function services_extra_services_resources() {
   $resources['comments'] = comments_resources();
   $resources['user_filter'] = user_filter_resources();
   $resources['form_content'] = form_content_resources();
-  $resources['backup_migrate_sdlist'] = backup_migrate_sdlist_resources();
+  $resources['backup_migrate'] = backup_migrate_resources();
+  $resources['backup_migrate_destination'] = backup_migrate_destination_resources();
   return $resources;
 }
 

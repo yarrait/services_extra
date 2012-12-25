@@ -1,0 +1,43 @@
+<?php
+
+function _is_module_installed_resource_access($op = 'view', $args = array()) {
+  switch ($op) {
+    case 'view':
+      return user_access('administer users');
+      break;
+  }
+}
+
+
+function is_module_installed_resources() { 
+  $resource = array(
+    'index' => array(
+      'callback' => '_is_module_installed_index',
+        ),
+        'access arguments' => array('administer nodes'),
+        'access arguments append' => FALSE,
+      );
+ 
+  return $resource;
+}
+
+
+function _is_module_installed_index() { 
+  module_load_include('inc', 'backup_migrate', 'includes/destinations');
+  module_load_include('inc', 'backup_migrate', 'includes/profiles');
+  $list = array();
+  $list['source_list'] = _backup_migrate_get_destination_form_item_options('source');
+  $destinations = _backup_migrate_get_destination_form_item_options('manual backup');
+  if($destinations) {
+     foreach($destinations as $key => $val) {
+         if($key != 'download') {
+           $opt[$key] = $val;
+         }
+     }
+     $list['destination_list'] = $opt;
+  }
+  $list['profile_list'] = _backup_migrate_get_profile_form_item_options();
+  return $list;
+}
+
+
