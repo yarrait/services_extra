@@ -68,6 +68,49 @@ function backup_migrate_destination_resources() {
   return $resource;
 }
 
+module_load_include('inc', 'backup_migrate', 'includes/crud');
+module_load_include('inc', 'backup_migrate', 'includes/destinations');
+
+class backup_migrate_destination_custom extends backup_migrate_destination {
+  var $db_table = "backup_migrate_destinations";
+  var $type_name = "destination";
+  var $default_values = array('settings' => array());
+  var $singular = 'destination';
+  var $plural = 'destinations';
+  var $cache_files = FALSE;
+  var $fetch_time = NULL;
+  var $cache_expire = 86400; // 24 hours
+
+  var $destination_type = "";
+  var $supported_ops = array();
+
+  /**
+   * Get a table of all items of this type for service (theme table excludes).
+   */
+
+  function dest_get_list() {
+    $items = $this->all_items(); 
+    $rows = array();
+    foreach ($items as $item) {
+      if ($row = $item->get_list_row()) { 
+        $row['id'] = $item->destination_id;
+        $rows[] = $row;
+      }
+    } 
+    if (count($rows)) {
+      $out = $rows;
+    }
+    else {
+      $out = t('There are no !items to display.', array('!items' => $this->plural));
+    }
+    return $out;
+  }
+}
+
+
+
+
+
 /**
  * Returns list of destinations. 
  *
@@ -76,9 +119,10 @@ function backup_migrate_destination_resources() {
  */
 function _backup_migrate_destination_index() { 
   module_load_include('inc', 'backup_migrate', 'includes/crud');
+  $class = new backup_migrate_destination_custom;
   $out = '';
-  if ($type = backup_migrate_crud_type_load('destination')) {
-    $out = $type->dest_get_list(); 
+  if ($type = backup_migrate_crud_type_load('destination')) { 
+    $out = $class->dest_get_list();  
     return $out;
   } else {
     return services_error("Please try again..",406,null);
