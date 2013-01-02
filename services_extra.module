@@ -16,7 +16,7 @@ module_load_include('inc', 'services_extra', 'resources/comments');
 module_load_include('inc', 'services_extra', 'resources/user_filter');
 module_load_include('inc', 'services_extra', 'resources/form_content');
 module_load_include('inc', 'services_extra', 'resources/backup_migrate');
-module_load_include('inc', 'services_extra', 'resources/backup_migrate_detination');
+module_load_include('inc', 'services_extra', 'resources/backup_migrate_destination');
 
 // Following are the custom resources for our module
 
