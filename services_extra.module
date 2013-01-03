@@ -17,6 +17,7 @@ module_load_include('inc', 'services_extra', 'resources/user_filter');
 module_load_include('inc', 'services_extra', 'resources/form_content');
 module_load_include('inc', 'services_extra', 'resources/backup_migrate');
 module_load_include('inc', 'services_extra', 'resources/backup_migrate_destination');
+module_load_include('inc', 'services_extra', 'resources/is_module_installed');
 
 // Following are the custom resources for our module
 
@@ -37,6 +38,7 @@ function services_extra_services_resources() {
   $resources['form_content'] = form_content_resources();
   $resources['backup_migrate'] = backup_migrate_resources();
   $resources['backup_migrate_destination'] = backup_migrate_destination_resources();
+  $resources['is_module_installed'] = is_module_installed_resources();
 
   return $resources;
 }

@@ -265,11 +265,11 @@ function _backup_migrate_backup_restore_or_delete($data) {
     $time = $time['time'];
 
     $message['backup_migrate'] = array(
-      'message' => "Your file has been restored", //"$source". ' restored from '. "$dest" .' file ' . "$file". ' in '."$time". ' ms ',
+      'message' => "$source". ' restored from '. "$dest" .' file ' . "$file". ' in '."$time". ' ms ', //"Your file has been restored",
     );
 
   // Delete any temp files we've created.
-//    backup_migrate_cleanup();
+    backup_migrate_cleanup();
     return $message;
   }
   else {
