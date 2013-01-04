@@ -13,9 +13,6 @@ function _is_module_installed_resource_access($op = 'view', $args = array()) {
     case 'view':
       return user_access('administer users');
       break;
-    case 'create':
-      return user_access('administer users');
-      break;
   }
 }
 
@@ -34,10 +31,15 @@ function is_module_installed_resources() {
         'access arguments append' => FALSE,
     ),
   );
- 
   return $resource;
 }
 
+/**
+ * Returns list of installed Modules. 
+ *
+ * @return
+ *   list of installed Modules. 
+ */
 function _is_module_installed_index() {
   global $user;
   if($user) {
