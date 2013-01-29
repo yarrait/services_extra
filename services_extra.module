@@ -20,6 +20,7 @@
     module_load_include('inc', 'services_extra', 'resources/backup_migrate_destination');
   }
   module_load_include('inc', 'services_extra', 'resources/is_module_installed');
+  module_load_include('inc', 'services_extra', 'resources/image_upload');
 
 // Following are the custom resources for our module
 
@@ -43,6 +44,7 @@ function services_extra_services_resources() {
     $resources['backup_migrate_destination'] = backup_migrate_destination_resources();
   }
   $resources['is_module_installed'] = is_module_installed_resources();
+  $resources['image_upload'] = image_upload_resources();
 
   return $resources;
 }
