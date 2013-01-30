@@ -53,42 +53,25 @@ function image_upload_resources() {
  * @return
  *   image information on success otherwise service error message
  */
-function _image_upload_resources_create($imagedata) { 
-  $validators = array(
-  /**
-   * Defaults already allow png, jpg etc. If more needed to be supported,
-   * edit here.
-   */
-  'file_validate_extensions' => array(),
-  'file_validate_size' => array(),
-  );
+function _image_upload_resources_create($imagedata) { //print_r($imagedata['#upload_validators']); exit;
+  if(!empty($imagedata['#upload_validators']) && !empty($imagedata['#field_name']) && !empty($imagedata['#type_name']) && !empty($imagedata['imagefield_byte_code'])) {
+    $validators_decoded = (array) json_decode($imagedata['#upload_validators']); //print_r($validators_decoded); exit;
+    $validators = array(
+      'file_validate_extensions' => $validators_decoded['file_validate_extensions'],
+      'file_validate_size' => $validators_decoded['filefield_validate_size'],
+    );
+    $image_str = $imagedata['imagefield_byte_code'];
+    $image = base64_decode($image_str); 
 
-  $image_str = 'abc'; //$imagedata['img_string'];
+    $field = content_fields($imagedata['#field_name'], $imagedata['#type_name']);
+    $dest = filefield_widget_file_path($field); 
 
-  $image = base64_decode($image_str); 
-  //  $saved_img = file_put_contents('/var/image.png', $image);
-
-  $field = content_fields('field_product_image', 'product'); //content_fields($element['#field_name'], $element['#type_name']);
-  $dest = filefield_widget_file_path($field); 
-
-  $filepath = file_save_data($image, variable_get('file_directory_temp'));
-  $file = field_file_save_file($filepath, $validators, $dest);
-
-  /* following is the content what $file will have
-Array
-(
-    [uid] => 1
-    [filename] => fileMysu0k
-    [filepath] => sites/default/files/fileMysu0k
-    [filemime] => application/octet-stream
-    [source] => field_file_save_file
-    [destination] => sites/default/files/fileMysu0k
-    [filesize] => 19281
-    [status] => 0
-    [timestamp] => 1359461443
-    [fid] => 20
-)
-  */
-//  print_r($file); exit;
-
+    $dest_path = variable_get('file_directory_temp')."/"."{$imagedata['file_name']}"; //print_r($dest_path); exit;
+    $filepath = file_save_data($image, $dest_path);
+    $file = field_file_save_file($filepath, $validators, $dest);
+    if(!empty($file)) {
+      return $file;
+    }
+  }
+  return FALSE;
 }
