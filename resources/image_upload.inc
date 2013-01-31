@@ -12,7 +12,7 @@ function _image_upload_resource_access($op = 'view', $args = array()) {
     case 'view':
       return user_access('administer users');
       break;
-    case 'create':
+    case 'delete':
       return user_access('administer users');
       break;
   }
@@ -41,6 +41,21 @@ function image_upload_resources() {
         'access arguments' => array('create'),
         'access arguments append' => TRUE,
     ),
+    'delete' => array(
+      'callback' => '_image_upload_resources_delete',
+        'args' => array(
+          array(
+            'name' => 'fid',
+            'optional' => FALSE,
+            'type' => 'int',
+            'source' => array('path' => 0),
+          ),
+        ),
+        'access callback' => '_image_upload_resource_access',
+        'access arguments' => array('delete'),
+        'access arguments append' => TRUE,
+    ),
+
   );
  
   return $resource;
@@ -54,7 +69,7 @@ function image_upload_resources() {
  *   image information on success otherwise service error message
  */
 function _image_upload_resources_create($imagedata) { //print_r($imagedata['#upload_validators']); exit;
-  if(!empty($imagedata['#upload_validators']) && !empty($imagedata['#field_name']) && !empty($imagedata['#type_name']) && !empty($imagedata['imagefield_byte_code'])) {
+  if(!empty($imagedata)) {
     $validators_decoded = (array) json_decode($imagedata['#upload_validators']); //print_r($validators_decoded); exit;
     $validators = array(
       'file_validate_extensions' => $validators_decoded['file_validate_extensions'],
@@ -71,6 +86,26 @@ function _image_upload_resources_create($imagedata) { //print_r($imagedata['#upl
     $file = field_file_save_file($filepath, $validators, $dest);
     if(!empty($file)) {
       return $file;
+    }
+  }
+  return FALSE;
+}
+
+/**
+ * Returns Boolean value
+ *
+ * @param $fid
+ *   $fid - file id
+ * @return
+ *  Boolean TRUE if the file is deleted else FALSE
+ */
+function _image_upload_resources_delete($fid) {
+  if(isset($fid)) {
+    $removed_file = field_file_load($fid);
+    if ($removed_file['status'] == 0) {
+      if(field_file_delete($removed_file)) {
+        return TRUE;
+      } else return FALSE;
     }
   }
   return FALSE;
