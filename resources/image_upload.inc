@@ -99,10 +99,10 @@ function _image_upload_resources_create($imagedata) { //print_r($imagedata['#upl
  * @return
  *  Boolean TRUE if the file is deleted else FALSE
  */
-function _image_upload_resources_delete($fid) {
+function _image_upload_resources_delete($fid) { 
   if(isset($fid)) {
-    $removed_file = field_file_load($fid);
-    if ($removed_file['status'] == 0) {
+    $removed_file = field_file_load($fid); 
+    if ($removed_file['status'] == 0 || $removed_file['status'] == 1) {
       if(field_file_delete($removed_file)) {
         return TRUE;
       } else return FALSE;
