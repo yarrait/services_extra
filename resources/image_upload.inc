@@ -3,13 +3,13 @@
  * Gets access rules.
  *
  * @param string $op
- *  $op - Permission requested.
+ * $op - Permission requested.
  * @return Boolean
- *  Boolean TRUE if the current user has the requested permission.
+ * Boolean TRUE if the current user has the requested permission.
  */
-function _image_upload_resource_access($op = 'view', $args = array()) {
+function _image_upload_resource_access($op = 'create', $args = array()) {
   switch ($op) {
-    case 'view':
+    case 'create':
       return user_access('administer users');
       break;
     case 'delete':
@@ -22,7 +22,7 @@ function _image_upload_resource_access($op = 'view', $args = array()) {
  * Gets all resource definitions.
  *
  * @return array
- *  An array containing all resources.
+ * An array containing all resources.
  */
 function image_upload_resources() {
   $resource = array(
@@ -62,13 +62,14 @@ function image_upload_resources() {
 }
 
 /**
- * Returns image information on success otherwise service error message 
+ * Returns image information on success otherwise service error message
  * @param $imagedata
- *  $imagedata - Required data to upload image (Like, imagename, image type).
+ * $imagedata - Required data to upload image (Like, imagename, image type).
  * @return
- *   image information on success otherwise service error message
+ * image information on success otherwise service error message
  */
-function _image_upload_resources_create($imagedata) { //print_r($imagedata['#upload_validators']); exit;
+function _image_upload_resources_create($imagedata) { 
+
   if(!empty($imagedata)) {
     $validators_decoded = (array) json_decode($imagedata['#upload_validators']); //print_r($validators_decoded); exit;
     $validators = array(
@@ -76,10 +77,10 @@ function _image_upload_resources_create($imagedata) { //print_r($imagedata['#upl
       'file_validate_size' => $validators_decoded['filefield_validate_size'],
     );
     $image_str = $imagedata['imagefield_byte_code'];
-    $image = base64_decode($image_str); 
+    $image = base64_decode($image_str);
 
     $field = content_fields($imagedata['#field_name'], $imagedata['#type_name']);
-    $dest = filefield_widget_file_path($field); 
+    $dest = filefield_widget_file_path($field);
 
     $dest_path = variable_get('file_directory_temp')."/"."{$imagedata['file_name']}"; //print_r($dest_path); exit;
     $filepath = file_save_data($image, $dest_path);
@@ -95,13 +96,13 @@ function _image_upload_resources_create($imagedata) { //print_r($imagedata['#upl
  * Returns Boolean value
  *
  * @param $fid
- *   $fid - file id
+ * $fid - file id
  * @return
- *  Boolean TRUE if the file is deleted else FALSE
+ * Boolean TRUE if the file is deleted else FALSE
  */
 function _image_upload_resources_delete($fid) { 
   if(isset($fid)) {
-    $removed_file = field_file_load($fid); 
+    $removed_file = field_file_load($fid);
     if ($removed_file['status'] == 0 || $removed_file['status'] == 1) {
       if(field_file_delete($removed_file)) {
         return TRUE;

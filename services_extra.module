@@ -3,6 +3,7 @@
 // Files to include in our module 
 
   module_load_include('inc', 'services_extra', 'resources/watchdog');
+  module_load_include('inc', 'services_extra', 'resources/system_info');
   module_load_include('inc', 'services_extra', 'resources/user_permission');
   module_load_include('inc', 'services_extra', 'resources/vocabulary_term');
   module_load_include('inc', 'services_extra', 'resources/accessrule');
@@ -24,9 +25,10 @@
 
 // Following are the custom resources for our module
 
-function services_extra_services_resources() {
+function services_extra_services_resources() { 
   $resources = array();
   $resources['watchdog'] = watchdog_resources();
+  $resources['system_info'] = system_info_resources();
   $resources['user_permission'] = user_permission_resources();
   $resources['vocabulary_term'] = vocabulary_term_resources();
   $resources['accessrule'] = accessrule_resources();
