@@ -16,6 +16,7 @@
   module_load_include('inc', 'services_extra', 'resources/comments'); 
   module_load_include('inc', 'services_extra', 'resources/user_filter');
   module_load_include('inc', 'services_extra', 'resources/form_content');
+  module_load_include('inc', 'services_extra', 'resources/site_configuration');
   if(module_exists('backup_migrate')) {
     module_load_include('inc', 'services_extra', 'resources/backup_migrate');
     module_load_include('inc', 'services_extra', 'resources/backup_migrate_destination');
@@ -47,6 +48,6 @@ function services_extra_services_resources() {
   }
   $resources['is_module_installed'] = is_module_installed_resources();
   $resources['image_upload'] = image_upload_resources();
-
+  $resources['site_configuration'] = site_configuration_resources();
   return $resources;
 }

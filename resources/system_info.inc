@@ -18,5 +18,11 @@ function system_info_resources() {
 
 function _system_info_resource_index() { 
   $var['version'] = VERSION;
+  
+  //getting version of service extra module
+  $services_extra_path = drupal_get_path('module', 'services_extra') . '/services_extra' . '.info';
+  $services_extra = drupal_parse_info_file($services_extra_path);
+  $var['services_extra_version'] = $services_extra['version'];
+
   return $var;
 }

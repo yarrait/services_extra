@@ -183,7 +183,7 @@ function _role_resource_index($page, $fields, $parameters, $page_size) {
  * @return
  *   created role
  */
-function _role_resource_create($role){
+function _role_resource_create($role){ 
   $role = _services_arg_value($role, 'role');
   module_load_include('inc', 'user', 'user.admin');
   $form_state = array();
@@ -198,6 +198,7 @@ function _role_resource_create($role){
     $roleid = db_fetch_object($rid); 
     $role_service_uri['rid']=$roleid -> rid;
     $role_service_uri['uri']=services_resource_uri(array('user',$roleid -> rid));
+
     return $role_service_uri;
   }
 }
