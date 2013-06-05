@@ -1,7 +1,7 @@
 <?php
 
 // Files to include in our module 
-
+  include_once('services_extra.features.inc');
   module_load_include('inc', 'services_extra', 'resources/watchdog');
   module_load_include('inc', 'services_extra', 'resources/system_info');
   module_load_include('inc', 'services_extra', 'resources/user_permission');
